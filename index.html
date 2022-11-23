@@ -1,6 +1,60 @@
 <!doctype html>
 <html>
   <head>
+    <style>
+      * {
+        margin: 0;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        font-family: 'Courier New', Courier, monospace;
+      }
+      body {
+        background: #190700;
+      }
+      #InputContainer {
+        display: flex;
+        margin: 1em 0;
+        border: solid #8E2300;
+        border-width: 1px 0;
+        padding: 0.5em 2em;
+        background: #511500;
+      }
+      #InputContainer * + * {
+        margin-left: 1em;
+      }
+      #ErrorCodeLabel {
+        color: #B52A00;
+        vertical-align: middle;
+      }
+      #ErrorCodeInput {
+        color: #FF5000;
+        vertical-align: middle;
+        width: 100%;
+        flex: 1;
+        border: 0;
+        background: transparent;
+        border-bottom: 1px dashed #FF5000;
+      }
+      #OutputContainer {
+      }
+      dl {
+        margin: 0 1em 1em 1em;
+      }
+      dt {
+        color: #B52A00;
+      }
+      dd {
+        margin-left: 2em;
+      }
+      dd.value {
+        color: #FF5000;
+      }
+      dd.error {
+        color: #FF5000;
+        font-weight: bold;
+      }
+    </style>
     <script>
       // Main sources:
       // https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/705fb797-2175-4a90-b5a3-3918024b10b8
@@ -11477,10 +11531,11 @@
             0xC03A0019: ["NTSTATUS:STATUS_VHD_DIFFERENCING_CHAIN_ERROR_IN_PARENT"],
           };
         addEventListener("load", (oEvent) => {
-          let oInputTextElement = document.getElementById("ErrorCode"),
-              oOutputListElement = document.getElementById("DefineNames");
+          let oInputTextElement = document.getElementById("ErrorCodeInput"),
+              oOutputListElement = document.getElementById("DescriptionsList");
           if (location.hash.length > 1) {
             oInputTextElement.value = location.hash.substr(1);
+            fFindErrorCodes();
           };
           oInputTextElement.addEventListener("change", fFindErrorCodes);
           oInputTextElement.addEventListener("keyup", fFindErrorCodes);
@@ -11508,31 +11563,39 @@
                 let a0sDefineTypesAndNames = dasDefineTypesAndNames_by_uValue[uValue];
                 if (a0sDefineTypesAndNames) {
                   a0sDefineTypesAndNames.forEach(sDefineTypeAndName => {
-                    let oListItemElement = document.createElement("li");
-                    oListItemElement.textContent = "0x" + uValue.toString(16) + " = " + sDefineTypeAndName;
-                    oOutputListElement.appendChild(oListItemElement);
+                    let asDefineType_and_sName = sDefineTypeAndName.split(":"),
+                        oTermElement = oOutputListElement.appendChild(document.createElement("dt")),
+                        oDetailElement = oOutputListElement.appendChild(document.createElement("dd"));
+                    oTermElement.textContent = asDefineType_and_sName[0] + " 0x" + uValue.toString(16);
+                    oDetailElement.textContent = asDefineType_and_sName[1];
+                    oDetailElement.className = "value";
                   });
                 } else {
-                  let oListItemElement = document.createElement("li");
-                  oListItemElement.textContent = "0x" + uValue.toString(16) + " = UNKNOWN";
-                  oOutputListElement.appendChild(oListItemElement);
+                  let oTermElement = oOutputListElement.appendChild(document.createElement("dt")),
+                      oDetailElement = oOutputListElement.appendChild(document.createElement("dd"));
+                  oTermElement.textContent = "0x" + uValue.toString(16);
+                  oDetailElement.textContent = "UNKNOWN";
+                  oDetailElement.className = "error";
                 };
               });
             } else {
-              let oListItemElement = document.createElement("li");
-                  oListItemElement.textContent = "Not a valid value";
-                  oOutputListElement.appendChild(oListItemElement);
+              let oTermElement = oOutputListElement.appendChild(document.createElement("dt")),
+                  oDetailElement = oOutputListElement.appendChild(document.createElement("dd"));
+              oTermElement.textContent = "0x" + uValue.toString(16);
+              oDetailElement.textContent = "NOT A VALID VALUE";
+              oDetailElement.className = "error";
             };
           };
         });
     </script>
   </head>    
   <body>
-    <p>
-      Error code: <input type="text" id="ErrorCode"/>
-    </p>
-    <p>
-      <ul id="DefineNames"></ul>
-    </p>
+    <span id="InputContainer">
+      <label id="ErrorCodeLabel" for="ErrorCodeInput">Error code:</label>
+      <input id="ErrorCodeInput" type="text"/>
+    </span>
+    <span id="OutputContainer">
+      <dl id="DescriptionsList"></dl>
+    </span>
   </body>
 </html>
