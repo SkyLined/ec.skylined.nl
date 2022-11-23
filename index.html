@@ -6,6 +6,7 @@
         margin: 0;
         border: 0;
         padding: 0;
+        outline: 0;
         background: transparent;
         font-family: 'Courier New', Courier, monospace;
       }
@@ -11531,6 +11532,7 @@
         addEventListener("load", (oEvent) => {
           let oInputTextElement = document.getElementById("ErrorCodeInput"),
               oOutputListElement = document.getElementById("DescriptionsList");
+          oInputTextElement.focus();
           if (location.hash.length > 1) {
             oInputTextElement.value = location.hash.substr(1);
             fFindErrorCodes();
