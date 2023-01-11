@@ -46,10 +46,18 @@
       dd {
         margin-left: 2em;
       }
-      dd.value {
+      a {
+        text-decoration: none;
+      }
+      a::after {
+        content: ' \1F50E\FE0E';
+        font-size: 75%;
+        vertical-align: text-top;
+      }
+      .value {
         color: #FF5000;
       }
-      dd.error {
+      .error {
         color: #FF5000;
         font-weight: bold;
       }
@@ -11566,9 +11574,11 @@
                     let asDefineType_and_sName = sDefineTypeAndName.split(":"),
                         oTermElement = oOutputListElement.appendChild(document.createElement("dt")),
                         oDetailElement = oOutputListElement.appendChild(document.createElement("dd"));
+                        oDetailLinkElement = oDetailElement.appendChild(document.createElement("a"));
                     oTermElement.textContent = asDefineType_and_sName[0] + " 0x" + uValue.toString(16);
-                    oDetailElement.textContent = asDefineType_and_sName[1];
-                    oDetailElement.className = "value";
+                    oDetailLinkElement.textContent = asDefineType_and_sName[1];
+                    oDetailLinkElement.className = "value";
+                    oDetailLinkElement.href = "https://duckduckgo.com/?q=" + encodeURIComponent(asDefineType_and_sName[1]) + "+site%3Alearn.microsoft.com";
                   });
                 } else {
                   let oTermElement = oOutputListElement.appendChild(document.createElement("dt")),
